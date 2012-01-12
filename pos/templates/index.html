@@ -6,12 +6,17 @@
     <!--[if IE]
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link rel="stylesheet/less" href="/static/products.less">
+    <link rel="stylesheet/less" href="/static/lib/bootstrap.less">
+    <script src="/static/less.js">
 </head>
 <body>
-
+    <div class="container">
+        {% for product in products %}
+            <h1>{{ product.name }}</h1>
+            <h2>{{ product.price }}</h2>
+            <h3>{{ product.description }}</h3>
+        {% endfor %}
+    </div>
 </body>
 </html>
-
-{% for product in products %}
-    {{ product.name }} {{ product.price }} {{ product.description }}
-{% endfor %}
