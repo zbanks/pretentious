@@ -17,4 +17,5 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'pretentious.pos.views.index', name='index'),
+    url(r'^signup$', 'pretentious.pos.views.signup', name='signup'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

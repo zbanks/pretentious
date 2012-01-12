@@ -1,22 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <title>Pretentious</title>
-    <!--[if IE]
-        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link rel="stylesheet/less" href="/static/products.less">
-    <link rel="stylesheet/less" href="/static/lib/bootstrap.less">
-    <script src="/static/less.js">
-</head>
-<body>
-    <div class="container">
+{% extends "base.html" %} 
+{% block container %}
         {% for product in products %}
             <h1>{{ product.name }}</h1>
             <h2>{{ product.price }}</h2>
             <h3>{{ product.description }}</h3>
         {% endfor %}
-    </div>
-</body>
-</html>
+{% endblock %}
