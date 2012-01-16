@@ -20,8 +20,11 @@ class SignupForm(forms.Form):
     
 
 def index(request):
-    products = Product.objects.filter(is_active=True)
-    return render_to_response('index.html', RequestContext(request, {"products": products}))
+    products = Product.objects.filter(is_active=True).order_by("ordering")
+    display_products = [None]*9
+    for product in products:
+        display_products[product.ordering] = product
+    return render_to_response('index.html', RequestContext(request, {"products": products, "display_products": display_products}))
 
 def signup(request):
     if request.method == 'POST':
