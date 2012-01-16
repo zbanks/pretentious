@@ -1,7 +1,7 @@
 {% extends "base.html" %} 
 {% block container %}
         {% for product in display_products %}
-            <div class="item-{{ product.ordering }}">
+            <div class="item-{{ forloop.counter }}">
                 <h1>{{ product.name }}</h1>
                 <h2>{{ product.price }}</h2>
                 <h3>{{ product.description }}</h3>
