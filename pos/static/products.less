@@ -1,12 +1,74 @@
+@font-face { font-family: DINPro; src: url('/static/fonts/DinPro-Med.TTF'); } 
+
+body {
+    margin:0;
+    padding:0;
+    
+    background:#333;
+    
+    font-family:DINPro;
+}
+
 .grid_container {
 	
 }
 .grid_box {
+    position:fixed;
+    left:50%;
+    top:50%;
+    margin:-100px 0 0 -100px;
+    
     width:200px;
     height:200px;
     
     background: #C40;
     
-    color:white;
+    color:#444;
     font-size:14px;
+    font-weight:600;
+    
+    overflow:none;
+    
+    border-radius:3px;
+}
+
+.grid_box:hover {
+    background: #D40;
+    color:#EEC;
+}
+
+.grid_box:active {
+    background: #EEC;
+    color:#C40;
+}
+
+.box1 {margin:-310px 0 0 -310px;}
+.box2 {margin:-310px 0 0 -100px;}
+.box3 {margin:-310px 0 0 110px;}
+.box4 {margin:-100px 0 0 -310px;}
+.box5 {margin:-100px 0 0 -100px;}
+.box6 {margin:-100px 0 0 110px;}
+.box7 {margin:110px 0 0 -310px;}
+.box8 {margin:110px 0 0 -100px;}
+.box9 {margin:110px 0 0 110px;}
+
+.box0 {
+    margin:110px 0 0 -420px;
+    width:100px;
+    background-color:#555;
+}
+.box0:hover {
+    color:#444;
+    background-color:#666;
+}
+
+.box_label {
+    font-size:18px;
+    position:absolute;
+    top:6px;
+    left:7px;
+}
+
+.box_txtcont {
+    margin:10px
 }

@@ -1,10 +1,16 @@
 {% extends "base.html" %} 
 {% block container %}
         {% for product in display_products %}
-            <div class="item-{{ forloop.counter }}">
-                <h1>{{ product.name }}</h1>
-                <h2>{{ product.price }}</h2>
-                <h3>{{ product.description }}</h3>
+            <div class="grid_box box{{ forloop.counter }}">
+                <div class="box_label">{{ forloop.counter }}</div>
+                <div class="box_txtcont">
+                    <h1>{{ product.name }}</h1>
+                    <h2>{{ product.price }}</h2>
+                    <h3>{{ product.description }}</h3>
+                </div>
             </div>
         {% endfor %}
+            <div class="grid_box box0">
+                <div class="box_label">0</div>
+            </div>
 {% endblock %}
