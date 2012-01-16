@@ -1,5 +1,10 @@
 from django.db import models
+from django.db.models import Sum, Avg
 from django.contrib.auth.models import User
+from django.db.models.signals import * 
+
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 
@@ -9,6 +14,9 @@ class Customer(models.Model):
     require_password = models.BooleanField(default=False)
     is_trusted = models.BooleanField(default=False)
     avatar = models.URLField(blank=True)
+    def recalculate(self, **kwargs):
+        self.balance = self.transaction_set.all().aggregate(Sum('credit'))["credit__sum"]
+        self.save()
     def __str__(self):
         return self.user.username
     class Meta:
@@ -48,3 +56,10 @@ class Stocking(models.Model):
     class Meta:
         pass
     
+
+def recalculate_balance(sender, instance, **kwargs):
+    instance.customer.recalculate()
+
+post_save.connect(recalculate_balance, sender=Transaction)
+pre_delete.connect(recalculate_balance, sender=Transaction)
+

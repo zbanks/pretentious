@@ -24,22 +24,55 @@ def index(request):
     display_products = [None]*9
     for product in products:
         display_products[product.ordering] = product
-    return render_to_response('index.html', RequestContext(request, {"products": products, "display_products": display_products}))
+    customers = Customer.objects.all()
+    return render_to_response('index.html', RequestContext(request, {"products": products,
+                                                                     "display_products": display_products,
+                                                                     "customers": customers}))
+
+def buy(request):
+    if "username" in request.REQUEST and "product" in request.REQUEST:
+        username = request.REQUEST["username"]
+        product_slug = request.REQUEST["product"]
+        customer = Customer.objects.filter(user__username=username)
+        product = Product.objects.filter(slug=product_slug)
+        if customer.exists() and product.exists():
+            customer = customer.get()
+            product = product.get()
+            t = Transaction(customer=customer, product=product, credit=-product.price)
+            t.save()
+            messages.success(request, "Bought %s as %s for %0.2f." % (product.name, username, product.price))
+            return HttpResponseRedirect("/")
+    messages.error(request, "Invalid purchase")
+    return HttpResponseRedirect("/") 
+
+def credit(request):
+    if "username" in request.REQUEST and "credit" in request.REQUEST:
+        username = request.REQUEST["username"]
+        credit = float(request.REQUEST["credit"])    
+        customer = Customer.objects.filter(user__username=username)
+        if customer.exists():
+            customer = customer.get()
+            t = Transaction(customer=customer, credit=credit)
+            t.save()
+            messages.success(request, "Added %0.2f credit to %s." % (credit, username))
+            return HttpResponseRedirect("/")
+    messages.error(request, "Invalid credit")
+    return HttpResponseRedirect("/")
 
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            c = Customer()
             cu = User()
             cu.first_name = form.cleaned_data["name"]
             cu.username = form.cleaned_data["username"]
             cu.email = form.cleaned_data["email"]
             cu.set_password('password')
             cu.save()
-            c.user = cu
-            c.balance = form.cleaned_data["balance"]
+            c = Customer(user=cu)
             c.save()
+            t = Transaction(customer=c, credit=form.cleaned_data["balance"])
+            t.save()
             messages.add_message(request, messages.INFO, "Created user %s" % c.user.username)
             return HttpResponseRedirect('/')
     else:
