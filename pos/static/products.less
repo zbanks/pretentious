@@ -1,78 +1,87 @@
 @font-face { font-family: DINPro; src: url('/static/fonts/DinPro-Med.TTF'); } 
 
+//Colors
+@bkgr:#333;
+@txt1:#333;
+@txt1-hov:#eec;
+@box:#c40;
+
+//Dimensions
+@boxsize:150px;
+
 body {
     margin:0;
     padding:0;
     
-    background:#333;
+    background:@bkgr;
     
     font-family:DINPro;
 }
 
-.grid_container {
-	
-}
 .grid_box {
     position:fixed;
     left:50%;
     top:50%;
-    margin:-100px 0 0 -100px;
+    margin:(-@boxsize/2) 0 0 (-@boxsize/2);
     
-    width:200px;
-    height:200px;
-    
-    background: #C40;
-    
-    color:#444;
-    font-size:14px;
-    font-weight:600;
-    
+    width:@boxsize;
+    height:@boxsize;
     overflow:none;
     
+    background: @box;
+    color:@txt1;
+    font-size:14px;
+    font-weight:600;
     border-radius:3px;
+    
+    &:hover {
+        background: #D40;
+        color:@txt1-hov;
+    }
+    &:active {
+        background: @txt1-hov;
+        color:@box;
+    }
+    
+    .label {
+        font-size:18px;
+        position:absolute;
+        top:6px;
+        left:7px;
+    }
+
+    .txtcont {
+        margin:10px
+    }
 }
 
-.grid_box:hover {
-    background: #D40;
-    color:#EEC;
+.nineBox (@item:0) {
+    margin-top:((-1.5*@boxsize - 10)+(floor(@item / 3))*(@boxsize + 10));
+    margin-left:((-1.5 * @boxsize - 10) + (3 * ((@item / 3) - floor(@item / 3)))*(@boxsize + 10))
 }
 
-.grid_box:active {
-    background: #EEC;
-    color:#C40;
-}
-
-.box1 {margin:-310px 0 0 -310px;}
-.box2 {margin:-310px 0 0 -100px;}
-.box3 {margin:-310px 0 0 110px;}
-.box4 {margin:-100px 0 0 -310px;}
-.box5 {margin:-100px 0 0 -100px;}
-.box6 {margin:-100px 0 0 110px;}
-.box7 {margin:110px 0 0 -310px;}
-.box8 {margin:110px 0 0 -100px;}
-.box9 {margin:110px 0 0 110px;}
+.box1 {.nineBox(0)}
+.box2 {.nineBox(1)}
+.box3 {.nineBox(2)}
+.box4 {.nineBox(3)}
+.box5 {.nineBox(4)}
+.box6 {.nineBox(5)}
+.box7 {.nineBox(6)}
+.box8 {.nineBox(7)}
+.box9 {.nineBox(8)}
 
 .box0 {
-    margin:110px 0 0 -420px;
-    width:100px;
+    margin-top:((-1.5 * @boxsize - 10) + 2 * (@boxsize + 10));
+    margin-left:(-2 * @boxsize - 20);
+    width:@boxsize/2;
     background-color:#555;
-}
-.box0:hover {
-    color:#444;
-    background-color:#666;
-}
-.box0:active {
-    color:#666;
-    background-color:#BBB;
-}
-
-.box_label {
-    font-size:18px;
-    position:absolute;
-    top:6px;
-    left:7px;
-}
-
-.box_txtcont {
-    margin:10px
+    
+    &:hover {
+        color:@txt1;
+        background-color:#666;
+    }
+    &:active {
+        color:#555;
+        background-color:#BBB;
+    }
 }
