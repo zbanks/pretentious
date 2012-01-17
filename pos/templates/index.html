@@ -1,11 +1,11 @@
 {% extends "base.html" %} 
 {% block container %}
     <div class="input_bar">
-        
+        <input type="text" class="orderbar">
     </div>
     <div class="products_pane">
         {% for product in display_products %}
-            <div class="grid_box box{{ forloop.counter }}">
+            <div class="grid_box box{{ forloop.counter }}" productslug="{{ product.slug }}">
                 <div class="box_label">{{ forloop.counter }}</div>
                 <div class="box_txtcont">
                     <h1>{{ product.name }}</h1>
@@ -19,9 +19,9 @@
             </div>
     </div>
     <div class="customers_pane">
-        <ul>
+        <ul class="customers">
             {% for customer in customers %}
-                <li>{{ customer.user.username }}</li>
+                <li class="customer">{{ customer.user.username }}</li>
             {% endfor %}
         </ul>
     </div>
