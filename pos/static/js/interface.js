@@ -10,7 +10,7 @@ $(document).ready(function(){
     }
     $("div.box0").data("index", 0).click(function(){
         $this = $(this);
-        setOrderbar("credit");
+        setOrderbar("credit", null);
     }); 
 
     $("li.customer").each(function(i){
@@ -22,14 +22,21 @@ $(document).ready(function(){
     });
 
     parseOrderbar = function(){
-        parseExpr = /\s*([0-9]+)\s+([a-zA-Z0-9_-]+)?\s*/i
+        var parseIntOrCredit = function(x){
+            if(x == "credit"){
+                return x;
+            }else{
+                return parseInt(x);
+            }
+        }
+        var parseExpr = /\s*([0-9]+|credit)\s+([a-zA-Z0-9_-]+)?\s*/i
         var ps = $("input.orderbar").val().match(parseExpr);
         if(!ps){
             return [0, ""];
         }else if(ps.length > 2){
-            return [parseInt(ps[1]), ps[2]];
+            return [parseIntOrCredit(ps[1]), ps[2]];
         }else{
-            return [parseInt(ps[1]), ""];
+            return [parseIntOrCredit(ps[1]), ""];
         }
     } 
 
@@ -37,7 +44,7 @@ $(document).ready(function(){
         var state = parseOrderbar();
         console.log(state);
         number = number || state[0];
-        username = username || state[1];
+        username = username || state[1] || "";
 
         $("input.orderbar").val(number + " " + username);
         $("input.orderbar").focus();
