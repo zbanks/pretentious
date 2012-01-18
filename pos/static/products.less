@@ -70,7 +70,18 @@ body {
     }
 
     .txtcont {
-        margin:10px
+        margin: 30px 8px 8px 8px
+    }
+}
+
+.product {
+    .name {
+        font-size:24px;
+    }
+    .price {
+        font-size:18px;
+        font-weight:400;
+        margin-left:5px;
     }
 }
 
@@ -103,12 +114,26 @@ body {
         color:#555;
         background-color:#BBB;
     }
+    &::after {
+        content:"+";
+        font-size:100px;
+        font-weight:300;
+        position: relative;
+        left: 24px;
+        bottom: -83px;
+    }
 }
 
 /** Text input **/
 
 .input_bar {
     input {
+        position: fixed;
+        width: 100%;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        
         font-family:inherit;
         outline: none;
     }
@@ -118,17 +143,18 @@ body {
         height:24px;
         margin:0;
 
-        background:black;
+        background:rgba(0,0,0,0.8);
         color:rgba(255,255,255,0.6);
         border:none;
-        padding: 0 10px 0 120px;
+        padding: 0 10px 0 85px;
     }
 
     &::before {
         content:"pretentious $ ";
         position:absolute;
-        top: 0px;
+        top: 5px;
         left: 10px;
-        font-size:inherit;
+        font-size:12px;
+        z-index:11
     }
 }

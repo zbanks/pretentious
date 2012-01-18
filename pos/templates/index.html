@@ -8,9 +8,10 @@
             <div class="grid_box box{{ forloop.counter }}" productslug="{{ product.slug }}">
                 <div class="label">{{ forloop.counter }}</div>
                 <div class="txtcont">
-                    <h1>{{ product.name }}</h1>
-                    <h2>{{ product.price }}</h2>
-                    <h3>{{ product.description }}</h3>
+                    <div class="product">
+                        <span class="name">{{ product.name }}</span>
+                        <span class="price">{{ product.price }}</span>
+                    </div>
                 </div>
             </div>
         {% endfor %}
