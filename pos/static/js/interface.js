@@ -45,6 +45,7 @@ $(document).ready(function(){
         username = username || state[1];
 
         $("input.orderbar").val(number + " " + username);
+        $("input.orderbar").focus();
     }
     
     submitOrder = function(){
