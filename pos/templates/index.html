@@ -10,7 +10,7 @@
                 <div class="txtcont">
                     <div class="product">
                         <span class="name">{{ product.name }}</span>
-                        <span class="price">{{ product.price }}</span>
+                        <span class="price">{{ product.price|floatformat:2 }}</span>
                     </div>
                 </div>
             </div>
@@ -25,5 +25,8 @@
                 <li class="customer">{{ customer.user.username }}</li>
             {% endfor %}
         </ul>
+    </div>
+    <div class="confirmation_pane">
+        <h1>Thank you for your order</h1>
     </div>
 {% endblock %}

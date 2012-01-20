@@ -1,5 +1,7 @@
 $(document).ready(function(){
-    PRODUCTS = ["credit"];
+    var PRODUCTS = ["credit"]; // To be populated
+    var PANES = [$("div.products_pane"), $("div.customers_pane"), $("div.confirmation_pane")]
+    var currentPane = 0;
 
     for(var i = 1; i <= 9; i++){
         $("div.box"+i).data("index", i).click(function(){
@@ -21,6 +23,30 @@ $(document).ready(function(){
         });
     });
 
+    $("input.orderbar").keydown(function(ev){
+        var $this = $(this);
+        var stat = parseOrderbar();
+
+        if(ev.which == 13){ // Enter
+            ev.preventDefault();
+        }
+
+        if(stat[0] == -1){
+            // Go to pane 1
+            switchPanes(currentPane, 0);
+            currentPane = 0;
+        }else if(!stat[1]){
+            // Go to pane 2
+            switchPanes(currentPane, 1);
+            currentPane = 1;
+        }else if(ev.which == 13){ // Enter
+            switchPanes(currentPane, 2);
+            currentPane = 2;
+        }
+    }).change(function(){
+        $(this).keydown(); 
+    });
+
     parseOrderbar = function(){
         var parseIntOrCredit = function(x){
             if(x == "credit"){
@@ -32,9 +58,9 @@ $(document).ready(function(){
         var parseExpr = /\s*([0-9]+|credit)\s+([a-zA-Z0-9_-]+)?\s*/i
         var ps = $("input.orderbar").val().match(parseExpr);
         if(!ps){
-            return [0, ""];
+            return [-1, ""];
         }else if(ps.length > 2){
-            return [parseIntOrCredit(ps[1]), ps[2]];
+            return [parseIntOrCredit(ps[1]), ps[2] || ""];
         }else{
             return [parseIntOrCredit(ps[1]), ""];
         }
@@ -64,5 +90,42 @@ $(document).ready(function(){
         $.getJSON("/messages", function(data){
             console.log(data);
         });
+    }
+
+    switchPanes = function(hidepane, showpane){
+        if(hidepane == showpane){
+            return;
+        }
+        
+        if(hidepane < showpane){
+            PANES[hidepane].animate({
+                opacity: 0,
+                left: "-100%",
+            }, 1000, "swing", function(){
+                $(this).hide().css("left", "-100%")
+            });
+
+            PANES[showpane].css({ opacity: 0, display: "block", left: "100%"}).animate({
+                opacity: 1,
+                left: 0,
+            }, 1000, "swing", function(){
+                ;
+            });
+        }else{
+            PANES[hidepane].animate({
+                opacity: 0,
+                left: "-100%",
+            }, 1000, "swing", function(){
+                $(this).hide().css("left", "-100%")
+            });
+
+            PANES[showpane].css({ opacity: 0, display: "block", left: "100%"}).animate({
+                opacity: 1,
+                left: 0,
+            }, 1000, "swing", function(){
+                ;
+            });
+
+        }
     }
 });
