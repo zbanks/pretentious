@@ -73,7 +73,7 @@ $(document).ready(function(){
         username = username || state[1] || "";
 
         $("input.orderbar").val(number + " " + username);
-        $("input.orderbar").focus();
+        $("input.orderbar").change().focus();
     }
     
     submitOrder = function(){
@@ -96,33 +96,33 @@ $(document).ready(function(){
         if(hidepane == showpane){
             return;
         }
-        
+        var ANIM_LEN = 600; // length of animation in ms 
         if(hidepane < showpane){
             PANES[hidepane].animate({
                 opacity: 0,
                 left: "-100%",
-            }, 1000, "swing", function(){
+            }, ANIM_LEN, "swing", function(){
                 $(this).hide().css("left", "-100%")
             });
 
             PANES[showpane].css({ opacity: 0, display: "block", left: "100%"}).animate({
                 opacity: 1,
                 left: 0,
-            }, 1000, "swing", function(){
+            }, ANIM_LEN, "swing", function(){
                 ;
             });
         }else{
             PANES[hidepane].animate({
                 opacity: 0,
-                left: "-100%",
-            }, 1000, "swing", function(){
-                $(this).hide().css("left", "-100%")
+                left: "100%",
+            }, ANIM_LEN, "swing", function(){
+                $(this).hide().css("left", "100%")
             });
 
-            PANES[showpane].css({ opacity: 0, display: "block", left: "100%"}).animate({
+            PANES[showpane].css({ opacity: 0, display: "block", left: "-100%"}).animate({
                 opacity: 1,
                 left: 0,
-            }, 1000, "swing", function(){
+            }, ANIM_LEN, "swing", function(){
                 ;
             });
 
