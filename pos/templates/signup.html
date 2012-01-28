@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head_include %}
+    <script type="text/javascript" src="/static/js/signup.js"></script>
+{% endblock %}
+
 {% block container %}
     <div class="signup">
         <form action="/signup" method="POST">

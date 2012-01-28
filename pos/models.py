@@ -20,7 +20,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.user.username
     class Meta:
-        pass
+        ordering = ["user__username"]
 
 class Product(models.Model):
     name = models.CharField(max_length=80)

@@ -7,7 +7,7 @@
 @box:#c40;
 
 //Dimensions
-@boxsize:200px;
+@boxsize:180px;
 
 /** General Elements **/
 
@@ -33,6 +33,7 @@ body {
     color:white;
     background:@bkgr;
     font-family:DINPro;
+    overflow-x: scroll;
 }
 
 /** Grid **/
@@ -134,7 +135,8 @@ body {
         font-weight:300;
         position: relative;
         left: 24px;
-        bottom: -83px;
+        /*bottom: -83px;*/
+        bottom: -60px;
     }
 }
 
@@ -188,7 +190,7 @@ body {
     left: 20px;
     
     li {
-        opacity:1;
+        opacity:0.8;
         color:@txt1;
         display:block;
         padding:5px;
@@ -199,7 +201,11 @@ body {
     li:hover {
         opacity:1;
     }
+    .nonmatch {
+        opacity: 0.3;
+    }
 }
+
 
 /* Confirmation Pane */
 .confirmation_pane {

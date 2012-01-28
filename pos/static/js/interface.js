@@ -7,68 +7,214 @@ $(document).ready(function(){
     var lastParse = {"type": ""};
     var lastParseLen = 0;
 
+    var tabCompletes = [];
+
     for(var i = 1; i <= 9; i++){
-        $("div.box"+i).data("index", i).click(function(){
+        $("div.products_pane div.box"+i).data("index", i).click(function(){
+            $this = $(this);
+            var index = i;
+            //setOrderbar($this.data("index"));
+            setOrderbar("selection", $this.data("index"));
+        }).each(function(){
             $this = $(this);
             PRODUCTS[$this.data("index")] = $this.attr("productslug");
-            setOrderbar($this.data("index"));
         });
     }
-    $("div.box0").data("index", 0).click(function(){
+    $("div.products_pane div.box0").data("index", 0).click(function(){
         $this = $(this);
-        setOrderbar("credit", null);
+        //setOrderbar("credit", null);
+        setOrderbar("credit", "credit");
     }); 
 
     $("li.customer").each(function(i){
         $this = $(this);
         var username = $this.html();
         $this.click(function(){
-            setOrderbar(null, username);
+            //setOrderbar(null, username);
+            setOrderbar("customer", username);
+            console.log(username);
         });
     });
     
-    alertParseError = function(){
+    var alertParseError = function(){
         console.log("Parse Error");
     }
 
-    $("input.orderbar").keyup(function(ev){
+    var setOrderbar = function(pane, value){
+        var stat = parseOrderbar();
+        if(pane == "customer"){
+            if(stat.type == "UT"){
+                stat.transfer.username = value;
+                stat.transfer.type = ">UA";
+            }else{
+                stat.username = value;
+                stat.type = "U";
+                stat.onNext = true;
+            }
+        }else if(pane == "amount"){
+            if(stat.type == "UT"){
+                stat.transfer.amount = value;
+                stat.transfer.type = ">UA";
+                stat.onNext = true;
+            }else{
+                stat.credit = value;
+            }
+        }else if(pane == "selection"){
+            stat.selection = value;
+            stat.type = "US";
+        }else if(pane == "credit"){
+            stat.type = "UC"
+        }else{
+            console.log("Error setorderbar", pane, value);
+        }
+        unparseOrderbar(stat);
+    }
+    
+    var unparseOrderbar = function(stat, preString){
+        preString = preString || $("input.orderbar").val();
+
+        outstr = "";
+        if(stat.type == ""){
+            outstr = "";
+        }else if(stat.type == "U"){
+            outstr = stat.username + " ";
+        }else if(stat.type == "US"){
+            outstr = stat.username + " " + stat.selection;
+        }else if(stat.type == "UC"){
+            var creditStr = " credit ";
+            if(preString.trim().substr(stat.username.length).trim().indexOf("c") == -1){
+                creditStr = " 0 ";
+            }
+
+            if(stat.credit){
+                outstr = stat.username + creditStr + stat.credit + " ";
+            }else{
+                outstr = stat.username + creditStr; 
+            }
+        }else if(stat.type == "UT"){
+            if(stat.transfer.type == ">"){
+                outstr = stat.username + " > ";
+            }else if(stat.transfer.type == ">U"){
+                outstr = stat.username + " > " + stat.transfer.username + " ";
+            }else if(stat.transfer.type == ">UA"){
+                outstr = stat.username + " > " + stat.transfer.username + " " + stat.transfer.amount + " ";
+            }else{
+                console.log("Error", stat);
+            }
+        }else{
+            console.log("Error", stat);
+        }
+        $("input.orderbar").val(outstr).keyup();
+    }
+    
+    $("input.orderbar").keydown(function(ev){
+        if(ev.which == 13 || ev.which == 9){
+            ev.preventDefault();
+            return false;
+        }
+    }).keyup(function(ev){
         var $this = $(this);
         var stat = parseOrderbar();
-
+        
+        var tab = function(f){};
+        var enter = function(f){};
         if(ev.which == 13){ // Enter
             ev.preventDefault();
+            enter = function(f){return f();};
         }
-        
+        if(ev.which == 9){ // Tab
+            ev.preventDefault();
+            tab = function(f){return f();};
+        }
+
         if(!stat || stat.error){
             alertParseError();
             return;
         }
-//US UC UT U
-//UT< UT<U UT<UA
         if(stat.type == "" || (stat.type == "U" && !stat.onNext)){
             // Choose a user
             console.log("Pane: user");
             switchToPane(VPANES.customers);
+
+            limitCustomers(stat.username);
+            
+            enter(function(){
+
+            });
+
+            tab(function(){
+                console.log(tabCompletes);
+                if(tabCompletes.length == 1){
+                    stat.username = tabCompletes[0];
+                    unparseOrderbar(stat);
+                }
+            });
+            
         }else if((stat.type == "US" && !stat.onNext) || (stat.type == "U" && stat.onNext)){
             // Make selection
             console.log("Pane: product");
             switchToPane(VPANES.products);
+                        
+            enter(function(){
+                // Submit
+            });
+
+            tab(function(){
+
+            });
         }else if(stat.type == "UC" && (stat.credit == 0 || !stat.onNext)){
             // Enter credit amount
             console.log("Pane: amount");
-            switchToPane(VPANES.amount);
+            switchToPane(VPANES.amount);             
+
+            enter(function(){
+                // Submit
+            });
+
+            tab(function(){
+
+            });
         }else if(stat.type == "UT" && (stat.transfer.type == ">" || (stat.transfer.type == ">U" && !stat.onNext))){
             // Enter user to transfer to
             console.log("Pane: user (xfer)");
             switchToPane(VPANES.customers);
+
+            limitCustomers(stat.transfer.username);
+            
+            enter(function(){
+
+            });
+
+            tab(function(){
+                if(tabCompletes.length == 1){
+                    stat.transfer.username = tabCompletes[0];
+                    unparseOrderbar(stat);
+                }
+            });
         }else if(stat.type == "UT" && ((stat.transfer.type == ">U" && stat.onNext) || (stat.transfer.type == ">UA" && !stat.onNext))){
             // Enter amount to transfer
             console.log("Pane: amount (xfer)");
             switchToPane(VPANES.amount);
+            
+            enter(function(){
+                // Submit
+            });
+
+            tab(function(){
+
+            });
         }else{
             // Confirm
             console.log("Pane: confirm");
             switchToPane(VPANES.confirmation);
+
+            enter(function(){
+                // Refresh
+            });
+
+            tab(function(){
+
+            });
         }
         /*
         if(stat[0] == -1){
@@ -87,6 +233,20 @@ $(document).ready(function(){
     }).change(function(){
         $(this).keydown(); 
     });
+
+    var limitCustomers = function(substr){
+        substr = substr || "";
+        tabCompletes = [];
+        $("li.customer").each(function(){
+            var $this = $(this);
+            if($this.html().toLowerCase().match("^" + substr.toLowerCase())){
+                $this.removeClass("nonmatch");
+                tabCompletes.push($this.html());
+            }else{
+                $this.addClass("nonmatch");
+            }
+        });
+    };
     
     /*
     parseOrderbar = function(){
@@ -127,7 +287,8 @@ $(document).ready(function(){
 
         return data;
     }
-
+    
+    /*
     setOrderbar = function(number, username){
         var state = parseOrderbar();
         console.log(state);
@@ -137,11 +298,13 @@ $(document).ready(function(){
         $("input.orderbar").val(number + " " + username);
         $("input.orderbar").change().focus();
     }
+    */
     
     submitOrder = function(){
-        var state = parseOrderbar();
-        product = PRODUCTS[state[0]];
-        username = state[1];
+        var stat = parseOrderbar();
+        console.log("ERROR");
+        //product = PRODUCTS[state[0]];
+        //username = state[1];
         
         $.get("/buy", {"username": username, "product": product}, function(data, textstatus ){
             updateMessages();

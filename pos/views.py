@@ -7,10 +7,13 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 
+import subprocess
+import re
+
 class SignupForm(forms.Form):
-    name = forms.CharField(max_length=30)
-    username = forms.CharField(max_length=20)
     email = forms.EmailField()
+    username = forms.CharField(max_length=20)
+    name = forms.CharField(max_length=30)
     balance = forms.DecimalField(max_digits=5, decimal_places=2, required=False)
     def clean_username(self):
         username = self.cleaned_data["username"]
@@ -23,11 +26,13 @@ def index(request):
     products = Product.objects.filter(is_active=True).order_by("ordering")
     display_products = [None]*9
     for product in products:
-        display_products[product.ordering] = product
+        if 1 <= product.ordering <= 9:
+            display_products[product.ordering-1] = product
     customers = Customer.objects.all()
     return render_to_response('index.html', RequestContext(request, {"products": products,
                                                                      "display_products": display_products,
-                                                                     "customers": customers}))
+                                                                     "customers": customers,
+                                                                     "range10": range(10)}))
 
 def buy(request):
     if "username" in request.REQUEST and "product" in request.REQUEST:
@@ -79,3 +84,12 @@ def signup(request):
         form = SignupForm()
 
     return render_to_response("signup.html", RequestContext(request, {"form": form}))
+
+def finger(request, kerberos):
+    directory = subprocess.check_output(["finger", "%s@mit" % kerberos]) 
+    for line in directory.split("\n"):
+        m = re.match(r"^ +name[:] (\w+)\, (\w+) .*", line)
+        if m and len(m.groups()) == 2:
+            groups = m.groups()
+            return HttpResponse("%s %s" % (groups[1], groups[0]))
+    return HttpResponse("")
