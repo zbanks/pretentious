@@ -1,6 +1,6 @@
 
 start
-  = wsp command:command wsp { return command; }
+  = wsp command:command endwsp:wsp { command["onNext"] = endwsp != ""; return command; }
 
 command
   = user:username wsp sel:selection { return {"type" : "US", "username" : user, "selection" : sel }; }
@@ -14,16 +14,16 @@ username
   = name:[a-zA-Z0-9_-]+ { return name.join(""); }
 
 credit
-  = ("credit" / "0") { return 0; }
-  / ("credit" / "0") wsp amt:amount { return amt; }
+  = ("credit" / "0") wsp amt:amount { return amt; }
+  / ("credit" / "credi" / "cred" / "cre" / "cr" / "c" / "0") { return 0; }
 
 amount
   = num:([0-9.]+) { return parseFloat(num.join(""), 10); }
 
 transfer
-  = "<" wsp user:username wsp amt:amount { return {"type": "<UA", "username": user, "amount" : amt}; } 
-  / "<" wsp user:username { return {"type": ">U", "username" : user }; }
-  / "<" { return {"type": ">" }; }
+  = ">" wsp user:username wsp amt:amount { return {"type": ">UA", "username": user, "amount" : amt}; } 
+  / ">" wsp user:username { return {"type": ">U", "username" : user }; }
+  / ">" { return {"type": ">" }; }
 
 selection
   = num:([1-9]([0-9]?)) { return parseInt(num.join(""), 10); }
