@@ -255,9 +255,10 @@ $(document).ready(function(){
         tabCompletes = [];
         $("li.customer").each(function(){
             var $this = $(this);
-            if($this.html().toLowerCase().match("^" + substr.toLowerCase())){
+            var username = $($this.children("span")[0]).html();
+            if(username.toLowerCase().match("^" + substr.toLowerCase())){
                 $this.removeClass("nonmatch");
-                tabCompletes.push($this.html());
+                tabCompletes.push(username);
             }else{
                 $this.addClass("nonmatch");
             }
