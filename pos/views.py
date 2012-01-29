@@ -59,10 +59,29 @@ def credit(request):
             customer = customer.get()
             t = Transaction(customer=customer, credit=credit)
             t.save()
-            messages.success(request, "Added %0.2f credit to %s." % (credit, username))
+            messages.success(request, "Added $%0.2f credit to %s." % (credit, username))
             return HttpResponseRedirect("/")
     messages.error(request, "Invalid credit")
     return HttpResponseRedirect("/")
+
+def transfer(request):
+    if "username" in request.REQUEST and "recipient" in request.REQUEST and "amount" in request.REQUEST:
+        username = request.REQUEST["username"]
+        recipient = request.REQUEST["recipient"]
+        amount = float(request.REQUEST["amount"])
+        try:
+            from_cust = Customer.objects.get(user__username=username)
+            to_cust = Customer.objects.get(user__username=recipient)
+        except:
+            messages.error(request, "Invalid customer/recipient")
+            return HttpResponseRedirect("/")
+        t = Transaction(customer=from_cust, credit=-amount)
+        t.save()
+        t2 = Transaction(customer=to_cust, credit=amount)
+        t2.save()
+        messages.success(request, "Transfered $%0.2f from %s to %s" % (amount, username, recipient))
+    return HttpResponseRedirect("/")
+
 
 def signup(request):
     if request.method == 'POST':

@@ -4,6 +4,9 @@
         <input type="text" class="orderbar" spellcheck="false" autocomplete="false" value="">
     </div>
     <div class="products_pane">
+        <div class="balance">
+            1.00
+        </div>
         <div class="products">
         {% for product in display_products %}
             <div class="grid_box box{{ forloop.counter }}" productslug="{{ product.slug }}">
@@ -24,9 +27,9 @@
     <div class="customers_pane" style="display: block;">
         <ul class="customers">
             {% for customer in customers %}
-                <li class="customer" balance="{{ customer.balance }}">
+                <li class="customer" balance="{{ customer.balance|floatformat:2 }}">
                     <img src="{{ customer.avatar }}">
-                    {{ customer.user.username }}
+                    <span>{{ customer.user.username }}</span>
                 </li>
             {% endfor %}
         </ul>

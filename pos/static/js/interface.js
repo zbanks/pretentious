@@ -1,5 +1,6 @@
 $(document).ready(function(){
     var PRODUCTS = ["credit"]; // To be populated
+    var CUSTOMERS = {};
     var PANES = [$("div.customers_pane"), $("div.products_pane"), $("div.amount_pane"), $("div.confirmation_pane")];
     var VPANES = {"customers": 0, "products": 1, "amount": 2, "confirmation": 3};
     var currentPane = 0;
@@ -33,12 +34,14 @@ $(document).ready(function(){
 
     $("li.customer").each(function(i){
         $this = $(this);
-        var username = $this.html();
+        var username = $this.children("span")[0].innerHTML;
+        CUSTOMERS[username] = {"balance": $this.attr("balance")};
         $this.click(function(){
             //setOrderbar(null, username);
             setOrderbar("customer", username);
             console.log(username);
         });
+
     });
     
     var alertParseError = function(){
@@ -159,7 +162,9 @@ $(document).ready(function(){
             // Make selection
             console.log("Pane: product");
             switchToPane(VPANES.products);
-                        
+            
+            $("div.balance").html(CUSTOMERS[stat.username].balance);
+
             enter(function(){
                 // Submit
             });
@@ -171,6 +176,8 @@ $(document).ready(function(){
             // Enter credit amount
             console.log("Pane: amount");
             switchToPane(VPANES.amount);             
+            
+            $("div.balance").html(CUSTOMERS[stat.username].balance);
 
             enter(function(){
                 // Submit
@@ -183,6 +190,8 @@ $(document).ready(function(){
             // Enter user to transfer to
             console.log("Pane: user (xfer)");
             switchToPane(VPANES.customers);
+
+            $("div.balance").html(CUSTOMERS[stat.username].balance);
 
             limitCustomers(stat.transfer.username);
             
@@ -201,6 +210,8 @@ $(document).ready(function(){
             console.log("Pane: amount (xfer)");
             switchToPane(VPANES.amount);
             
+            $("div.balance").html(CUSTOMERS[stat.username].balance);
+
             enter(function(){
                 // Submit
             });
