@@ -79,7 +79,7 @@ $(document).ready(function(){
         }else if(stat.type == "U"){
             outstr = stat.username + " ";
         }else if(stat.type == "US"){
-            outstr = stat.username + " " + stat.selection;
+            outstr = stat.username + " " + stat.selection + " "; // Fix?
         }else if(stat.type == "UC"){
             var creditStr = " credit ";
             if(preString.trim().substr(stat.username.length).trim().indexOf("c") == -1){
