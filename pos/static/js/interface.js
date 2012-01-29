@@ -12,12 +12,17 @@ $(document).ready(function(){
     for(var i = 1; i <= 9; i++){
         $("div.products_pane div.box"+i).data("index", i).click(function(){
             $this = $(this);
-            var index = i;
             //setOrderbar($this.data("index"));
             setOrderbar("selection", $this.data("index"));
         }).each(function(){
             $this = $(this);
             PRODUCTS[$this.data("index")] = $this.attr("productslug");
+        });
+
+        $("div.amount_pane div.box"+i).data("index", i).click(function(){
+            var $this = $(this);
+        }).each(function(){
+            var $this = $(this);
         });
     }
     $("div.products_pane div.box0").data("index", 0).click(function(){
