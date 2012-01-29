@@ -190,13 +190,26 @@ body {
     left: 20px;
     
     li {
+        width: 160px;
+        height: 40px;
+        padding:5px;
+        margin: 0 0 10px 0;
+        display:table;
+
         opacity:0.8;
         color:@txt1;
-        display:block;
-        padding:5px;
         background-color:#CCC;
+        
+        font-size:16px;
+        font-weight:500;
+
         border-radius:5px;
         cursor:pointer;
+        
+        .username {
+            display:table-cell;
+            vertical-align:middle;
+        }
     }
     li:hover {
         opacity:1;
