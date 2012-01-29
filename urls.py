@@ -19,6 +19,6 @@ urlpatterns = patterns('',
     url(r'^signup$', 'pretentious.pos.views.signup', name='signup'),
     url(r'^buy$', 'pretentious.pos.views.buy', name='buy'),
     url(r'^credit$', 'pretentious.pos.views.credit', name='credit'),
-    url(r'^finger/([a-zA-Z0-9]+)$', 'pretentious.pos.views.finger', name='finger'),
+    url(r'^finger/([a-zA-Z0-9-]+)$', 'pretentious.pos.views.finger', name='finger'),
     url(r'^$', 'pretentious.pos.views.index', name='index'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

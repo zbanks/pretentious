@@ -3,10 +3,14 @@ from django.db.models import Sum, Avg
 from django.contrib.auth.models import User
 from django.db.models.signals import * 
 
+import md5
 import logging
 logger = logging.getLogger(__name__)
 
 # Create your models here.
+
+def gravatar(cust):
+    return "http://www.gravatar.com/avatar/%s?d=identicon" % md5.md5(cust.user.email).hexdigest()
 
 class Customer(models.Model):
     user = models.OneToOneField(User)

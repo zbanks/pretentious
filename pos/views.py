@@ -94,6 +94,7 @@ def signup(request):
             cu.set_password('password')
             cu.save()
             c = Customer(user=cu)
+            c.avatar = gravatar(c)
             c.save()
             t = Transaction(customer=c, credit=form.cleaned_data["balance"])
             t.save()
@@ -107,7 +108,7 @@ def signup(request):
 def finger(request, kerberos):
     directory = subprocess.check_output(["finger", "%s@mit" % kerberos]) 
     for line in directory.split("\n"):
-        m = re.match(r"^ +name[:] (\w+)\, (\w+) .*", line)
+        m = re.match(r"^ *name[:] (\w+)\, (\w+).*", line)
         if m and len(m.groups()) == 2:
             groups = m.groups()
             return HttpResponse("%s %s" % (groups[1], groups[0]))
