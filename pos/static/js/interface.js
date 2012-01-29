@@ -112,7 +112,7 @@ $(document).ready(function(){
         }else{
             console.log("Error", stat);
         }
-        $("input.orderbar").val(outstr).keyup();
+        $("input.orderbar").val(outstr).keyup().focus();
     }
     
     $("input.orderbar").keydown(function(ev){
