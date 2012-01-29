@@ -1,5 +1,25 @@
 {% extends "base.html" %} 
 {% block container %}
+    <div class="customers_pane" style="display: block;">
+        <ul class="customers">
+            {% for customer in customers %}
+                <li class="customer">
+                    <img src="{{ customer.avatar }}">
+                    <span class="username">{{ customer.user.username }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="confirmation_pane">
+        <h1>Thank you for your order</h1>
+    </div>
+    <div class="amount_pane">
+        {% for i in range10 %}
+            <div class="grid_box box{{ i }}">
+                <div class="label">{{ i }}</div>
+            </div>
+        {% endfor %}
+    </div>
     <div class="input_bar">
         <input type="text" class="orderbar" spellcheck="false" autocomplete="false" value="">
     </div>
@@ -23,25 +43,5 @@
                 <div class="label">0</div>
             </div>
         </div>
-    </div>
-    <div class="customers_pane" style="display: block;">
-        <ul class="customers">
-            {% for customer in customers %}
-                <li class="customer" balance="{{ customer.balance|floatformat:2 }}">
-                    <img src="{{ customer.avatar }}">
-                    <span>{{ customer.user.username }}</span>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="confirmation_pane">
-        <h1>Thank you for your order</h1>
-    </div>
-    <div class="amount_pane">
-        {% for i in range10 %}
-            <div class="grid_box box{{ i }}">
-                <div class="label">{{ i }}</div>
-            </div>
-        {% endfor %}
     </div>
 {% endblock %}
