@@ -11,8 +11,8 @@ import subprocess
 import re
 
 class SignupForm(forms.Form):
-    email = forms.EmailField()
     username = forms.CharField(max_length=20)
+    email = forms.EmailField()
     name = forms.CharField(max_length=30)
     balance = forms.DecimalField(max_digits=5, decimal_places=2, required=False)
     def clean_username(self):
@@ -108,7 +108,7 @@ def signup(request):
 def finger(request, kerberos):
     directory = subprocess.check_output(["finger", "%s@mit" % kerberos]) 
     for line in directory.split("\n"):
-        m = re.match(r"^ *name[:] (\w+)\, (\w+).*", line)
+        m = re.match(r"^ *name[:] ([a-zA-Z0-9 '-]+)\, ([a-zA-Z0-9'-]+).*", line)
         if m and len(m.groups()) == 2:
             groups = m.groups()
             return HttpResponse("%s %s" % (groups[1], groups[0]))

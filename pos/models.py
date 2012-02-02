@@ -33,6 +33,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=4, decimal_places=2)
     description = models.TextField()
     ordering = models.SmallIntegerField()
+    shortcut = models.CharField(max_length=4)
     is_active = models.BooleanField(default=True)
     def __str__(self):
         return self.name
