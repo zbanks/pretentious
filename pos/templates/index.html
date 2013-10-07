@@ -30,11 +30,13 @@
         <div class="products">
         {% for product in display_products %}
             <div class="grid_box box{{ forloop.counter }}" productslug="{{ product.slug }}">
-                <div class="label">{{ forloop.counter }}</div>
+                <!-- <div class="label">{{ forloop.counter }}</div> -->
+                <div class="label">{{ product.shortcut }}</div>
                 <div class="txtcont">
                     <div class="product">
                         <span class="name">{{ product.name }}</span>
                         <span class="price">{{ product.price|floatformat:2 }}</span>
+                        <span class="shortcut" style="display: none;">{{ product.shortcut }}</span>
                     </div>
                 </div>
             </div>

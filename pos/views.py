@@ -10,6 +10,8 @@ from django import forms
 import subprocess
 import re
 
+DISPLAY_PRODUCTS = 9
+
 class SignupForm(forms.Form):
     username = forms.CharField(max_length=20)
     email = forms.EmailField()
@@ -26,7 +28,7 @@ def index(request):
     products = Product.objects.filter(is_active=True).order_by("ordering")
     display_products = [None]*9
     for product in products:
-        if 1 <= product.ordering <= 9:
+        if 1 <= product.ordering <= DISPLAY_PRODUCTS:
             display_products[product.ordering-1] = product
     customers = Customer.objects.all()
     return render_to_response('index.html', RequestContext(request, {"products": products,
