@@ -163,7 +163,7 @@ class Command(BaseCommand):
                         out("Change Product; Scan code")
                         # This is special, so we'll handle this oddly
                         code, __ = inp()
-                        if code in {"q", "quit", "!cancel", "cancel", "quit"}:
+                        if code in {'', "q", "quit", "!cancel", "cancel", "quit"}:
                             break
                         bcs = Barcode.objects.filter(text=code)
                         if bcs.exists():
