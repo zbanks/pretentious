@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from pos.models import *
 from datetime import datetime, timedelta
+from django.db.models import Avg, Max, Sum, Count
 import decimal
 import sys
 
@@ -13,7 +14,7 @@ PRODUCT = 4
 RETAB = 5
 NEWTAB = 6
 
-SPECIAL_CMDS = {"quit", "cash", "new", "product", "!retab", "!cancel", "!undo"}
+SPECIAL_CMDS = {"quit", "cash", "new", "product", "!retab", "!cancel", "!undo", "!fridge"}
 
 TIMEOUT = 60
 
@@ -154,6 +155,20 @@ class Command(BaseCommand):
                     state = NEWTAB
                     out("Hello new user! Let's set up a tab.")
                     out("What should the tab be named? (Probably your name, athena, or something else you can remember)")
+                elif command == "!fridge":
+                    for product in Product.objects.all():
+                        store = product.stocking_set.filter(in_machine=False).aggregate(Sum('cost'), Sum('quantity'))
+                        machine = product.stocking_set.filter(in_machine=True).aggregate(Sum('cost'), Sum('quantity'))
+                        trans = product.transaction_set.filter(void=False).aggregate(Sum('credit'), Count('pk'))
+
+                        out("> {name} (${price:0.2f}) (active={is_active})".format(product))
+                        out(" - Expense: ${0:0.2f} ({1}); Revenue: ${2:0.2f} ({3}); In machine: ${4:0.2f} ({5})".format(
+                                store["cost__sum"], store["cost__quantity"],
+                                trans["credit__sum"], trans["pk__count"],
+                                machine["cost__sum"] - trans["credit__sum"],
+                                machine["quantity__sum"] - trans["pk__count"])
+
+
                 elif command == "product":
 #state = PRODUCT
                     if not customer or not customer.user.username == "zach":
@@ -226,8 +241,6 @@ class Command(BaseCommand):
                             quantity=num,
                             in_machine=True)
                         out("Stocked into machine")
-                    continue
-
                 elif command == "!retab":
                     state = WAITING
                     if last_transaction:
@@ -260,7 +273,6 @@ class Command(BaseCommand):
                     out("Cancelled.")
                     state = WAITING
                     customer = None
-                    continue
                 else:
                     out("Oops, that seems like a bug. I'm going to report that.")
                     bug("Bug: unknown special command `{}`".format(command))
@@ -283,12 +295,8 @@ class Command(BaseCommand):
             if barcode.product:
                 product = barcode.product
                 if state == WAITING:
-                    # Someone bought something with cash
-                    out("multi")
-                    t = int(inp())
-                    for i in range(t):
-                        trans = Transaction.objects.create(customer=None, product=product, credit=-product.price)
-                        out("You just bought a {} (${:0.2f}) with cash.".format(product.name, product.price))
+                    trans = Transaction.objects.create(customer=None, product=product, credit=-product.price)
+                    out("You just bought a {} (${:0.2f}) with cash.".format(product.name, product.price))
                     out("Scan 'Oops -- Put on Tab' and then your tab's barcode to put it on your tab instead.")
                     out("Scan 'Oops -- Undo' if this isn't correct.")
                     last_transaction = trans

@@ -26,9 +26,13 @@ class Customer(models.Model):
     class Meta:
         ordering = ["user__username"]
 
+#class Market(models.Model):
+#name = models.CharField(max_length=80)
+
 class Product(models.Model):
     name = models.CharField(max_length=80)
 #generic = models.CharField(max_length=80)
+#market = models.ForeignKey(Market)
     slug = models.SlugField()
     image = models.URLField(blank=True)
     price = models.DecimalField(max_digits=4, decimal_places=2)
