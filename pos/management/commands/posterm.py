@@ -161,14 +161,12 @@ class Command(BaseCommand):
                         machine = product.stocking_set.filter(in_machine=True).aggregate(Sum('cost'), Sum('quantity'))
                         trans = product.transaction_set.filter(void=False).aggregate(Sum('credit'), Count('pk'))
 
-                        out("> {name} (${price:0.2f}) (active={is_active})".format(product))
+                        out("> {0.name} (${0.price:0.2f}) (active={0.is_active})".format(product))
                         out(" - Expense: ${0:0.2f} ({1}); Revenue: ${2:0.2f} ({3}); In machine: ${4:0.2f} ({5})".format(
-                                store["cost__sum"], store["cost__quantity"],
-                                trans["credit__sum"], trans["pk__count"],
-                                machine["cost__sum"] - trans["credit__sum"],
-                                machine["quantity__sum"] - trans["pk__count"])
-
-
+                                store["cost__sum"] or 0, store["quantity__sum"] or 0,
+                                trans["credit__sum"] or 0, trans["pk__count"] or 0,
+                                (machine["cost__sum"] or 0) - (trans["credit__sum"] or 0),
+                                (machine["quantity__sum"] or 0)- (trans["pk__count"] or 0)))
                 elif command == "product":
 #state = PRODUCT
                     if not customer or not customer.user.username == "zach":
