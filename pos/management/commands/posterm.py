@@ -284,8 +284,11 @@ class Command(BaseCommand):
                 product = barcode.product
                 if state == WAITING:
                     # Someone bought something with cash
-                    trans = Transaction.objects.create(customer=None, product=product, credit=-product.price)
-                    out("You just bought a {} (${:0.2f}) with cash.".format(product.name, product.price))
+                    out("multi")
+                    t = int(inp())
+                    for i in range(t):
+                        trans = Transaction.objects.create(customer=None, product=product, credit=-product.price)
+                        out("You just bought a {} (${:0.2f}) with cash.".format(product.name, product.price))
                     out("Scan 'Oops -- Put on Tab' and then your tab's barcode to put it on your tab instead.")
                     out("Scan 'Oops -- Undo' if this isn't correct.")
                     last_transaction = trans
